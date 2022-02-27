@@ -80,19 +80,35 @@
                     randomBox: 0,
                     hits: 0,
                     timeout : false,
-                    boxes : []
+                    boxes : [{coordinate:"", state:"", time:""}]
                 };
             }
 
             handleClick(i) {
+                console.log(i)
+                var position = this.state.boxes.length-1
+                console.log(this.convertBox(i, this.state.boxes[position]));
                 this.setState({
-
+                    
                 });
+                this.state.boxes.push(this.randomBox());
+            }
+
+            convertBox(i, accept){
+                var letter = String.fromCharCode(65+i%8);
+                var number = parseInt(i/8, 10)+1;
+                var box = letter+number;
+                if(accept === box){
+                    return true;
+                } else {
+                    return false;
+                }
+                 
             }
 
             handleStart() {
                 this.setState({timeout: true});
-                this.state.boxes.push(this.randomBox());
+                this.state.boxes.push(this.randomBox(), "", "");
             }
 
             handleFinish() {
@@ -101,7 +117,7 @@
 
             randomBox(){
                 var row = parseInt((Math.random() * (9 - 1) + 1), 10);
-                var col = Math.random() * (74 - 65) + 65;
+                var col = Math.random() * (73 - 65) + 65;
                 var char = String.fromCharCode(col);   
                 return char+row;
             }
@@ -120,11 +136,11 @@
                             <div>
                                 React Vision Chess
                             </div>
-                            <button className="start" onClick={()=> this.handleStart()}>Start</button>
+                            <button className="start" onClick={()=> this.handleStart()} disabled = {this.state.timeout}>Start</button>
                             <Timer value={this.state.timeout} handle={()=> this.handleFinish()} />
                             <ol>
-                                {this.state.boxes.map(i =>(
-                                    <li key={i}>{i}</li>
+                                {this.state.boxes.map((i, control) =>(
+                                    <li key={control}>{i}</li>
                                 ))}
                             </ol>
                         </div>
