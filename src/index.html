@@ -54,6 +54,7 @@
                 );
             }
 
+
             render() {
                 { this.state.counter = 0 }
                 return (
@@ -78,16 +79,27 @@
                     squares: Array(64).fill(null),
                     randomBox: 0,
                     hits: 0,
+                    timeout : false
                 };
             }
 
             handleClick(i) {
-
                 this.setState({
 
                 });
             }
 
+            handleStart() {
+                this.setState({timeout: true});
+            }
+
+            handleFinish() {
+                this.setState({timeout: false});
+            }
+
+            randomBox(){
+                
+            }
 
 
             render() {
@@ -103,9 +115,42 @@
                             <div>
                                 React Vision Chess
                             </div>
-                            <button className="start">Start</button>
+                            <button className="start" onClick={()=> this.handleStart()}>Start</button>
+                            <Timer value={this.state.timeout} handle={()=> this.handleFinish()} />
                             <ol></ol>
                         </div>
+                    </div>
+                );
+            }
+        }
+
+        class Timer extends React.Component {
+            constructor(props){
+                super(props);
+                this.state = {seconds: 5};
+            }
+
+            tickTimer(){
+                if(this.props.value === true){
+                    if(this.state.seconds === 0) {
+                         this.props.handle();
+                         alert("Time completed, finsh the game");
+                    } else {
+                        this.setState(state => ({
+                            seconds: state.seconds - 1
+                        }));   
+                    }
+                }
+            }
+
+            componentDidMount(){
+                this.interval = setInterval(()=> this.tickTimer(), 1000);
+            }
+
+            render(){
+                return(
+                    <div>
+                        Seconds: {this.state.seconds}
                     </div>
                 );
             }
@@ -114,6 +159,7 @@
         // ========================================
 
         ReactDOM.render(<Game />, document.getElementById("root"));
+
 
     </script>
 </body>
