@@ -80,18 +80,22 @@
                     randomBox: 0,
                     hits: 0,
                     timeout : false,
-                    boxes : [{coordinate:"", state:"", time:""}]
+                    boxes : []
                 };
             }
 
             handleClick(i) {
-                console.log(i)
                 var position = this.state.boxes.length-1
-                console.log(this.convertBox(i, this.state.boxes[position]));
+                var result = this.convertBox(i, this.state.boxes[position].coordinate);
+                var boxestemp = this.state.boxes;
+                boxestemp[position].state = (result) ? "✅" : "❌";
+                if(result) {
+                    this.state.hits++;
+                }
                 this.setState({
-                    
+                    boxes : boxestemp
                 });
-                this.state.boxes.push(this.randomBox());
+                this.state.boxes.push({coordinate:this.randomBox(), state:"", time:""});
             }
 
             convertBox(i, accept){
@@ -108,7 +112,7 @@
 
             handleStart() {
                 this.setState({timeout: true});
-                this.state.boxes.push(this.randomBox(), "", "");
+                this.state.boxes.push({coordinate:this.randomBox(), state:"", time:""});
             }
 
             handleFinish() {
@@ -137,11 +141,12 @@
                                 React Vision Chess
                             </div>
                             <button className="start" onClick={()=> this.handleStart()} disabled = {this.state.timeout}>Start</button>
-                            <Timer value={this.state.timeout} handle={()=> this.handleFinish()} />
+                            <Timer value={this.state.timeout} handle={()=> this.handleFinish()} points={this.state.hits} />
                             <ol>
-                                {this.state.boxes.map((i, control) =>(
-                                    <li key={control}>{i}</li>
+                                {this.state.boxes.map(({coordinate, state, time}, control) =>(
+                                    <li key={control}>{coordinate+" "+state+" "+time}</li>
                                 ))}
+                                {console.log(this.state.boxes.length)}
                             </ol>
                         </div>
                     </div>
@@ -152,14 +157,15 @@
         class Timer extends React.Component {
             constructor(props){
                 super(props);
-                this.state = {seconds: 60};
+                this.state = {seconds: 10};
             }
 
             tickTimer(){
                 if(this.props.value === true){
                     if(this.state.seconds === 0) {
                          this.props.handle();
-                         alert("Time completed, finsh the game");
+                         alert("Time completed, Your points are: "+this.props.points);
+                         location.reload();
                     } else {
                         this.setState(state => ({
                             seconds: state.seconds - 1
