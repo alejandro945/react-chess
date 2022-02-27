@@ -79,54 +79,54 @@
                     squares: Array(64).fill(null),
                     randomBox: 0,
                     hits: 0,
-                    timeout : false,
-                    boxes : [],
+                    timeout: false,
+                    boxes: [],
                 };
             }
 
             handleClick(i) {
-                var position = this.state.boxes.length-1;
-                var timeS =  localStorage.getItem("time");
+                var position = this.state.boxes.length - 1;
+                var timeS = localStorage.getItem("time");
                 var result = this.convertBox(i, this.state.boxes[position].coordinate);
                 var boxestemp = this.state.boxes;
                 boxestemp[position].state = (result) ? "✅" : "❌";
-                boxestemp[position].time = 60-timeS+" Seconds";
+                boxestemp[position].time = 60 - timeS + " Seconds";
 
-                if(result) {
+                if (result) {
                     this.state.hits++;
                 }
                 this.setState({
-                    boxes : boxestemp,
+                    boxes: boxestemp,
                 });
-                this.state.boxes.push({coordinate:this.randomBox(), state:"", time:""});
+                this.state.boxes.push({ coordinate: this.randomBox(), state: "", time: "" });
             }
 
-            convertBox(i, accept){
-                var letter = String.fromCharCode(65+i%8);
-                var number = parseInt(i/8, 10)+1;
-                var box = letter+number;
-                if(accept === box){
+            convertBox(i, accept) {
+                var letter = String.fromCharCode(65 + i % 8);
+                var number = parseInt(i / 8, 10) + 1;
+                var box = letter + number;
+                if (accept === box) {
                     return true;
                 } else {
                     return false;
                 }
-                 
+
             }
 
             handleStart() {
-                this.setState({timeout: true});
-                this.state.boxes.push({coordinate:this.randomBox(), state:"", time:""});
+                this.setState({ timeout: true });
+                this.state.boxes.push({ coordinate: this.randomBox(), state: "", time: "" });
             }
 
             handleFinish() {
-                this.setState({timeout: false});
+                this.setState({ timeout: false });
             }
 
-            randomBox(){
+            randomBox() {
                 var row = parseInt((Math.random() * (9 - 1) + 1), 10);
                 var col = Math.random() * (73 - 65) + 65;
-                var char = String.fromCharCode(col);   
-                return char+row;
+                var char = String.fromCharCode(col);
+                return char + row;
             }
 
 
@@ -143,11 +143,11 @@
                             <div>
                                 React Vision Chess
                             </div>
-                            <button className="start" onClick={()=> this.handleStart()} disabled = {this.state.timeout}>Start</button>
-                            <Timer value={this.state.timeout} handle={()=> this.handleFinish()} points={this.state.hits} />
+                            <button className="start" onClick={() => this.handleStart()} disabled={this.state.timeout}>Start</button>
+                            <Timer value={this.state.timeout} handle={() => this.handleFinish()} points={this.state.hits} />
                             <ol>
-                                {this.state.boxes.map(({coordinate, state, time}, control) =>(
-                                    <li key={control}>{coordinate+" "+state+" "+time}</li> 
+                                {this.state.boxes.map(({ coordinate, state, time }, control) => (
+                                    <li key={control}>{coordinate + " " + state + " " + time}</li>
                                 ))}
                             </ol>
                         </div>
@@ -157,33 +157,33 @@
         }
 
         class Timer extends React.Component {
-            constructor(props){
+            constructor(props) {
                 super(props);
-                this.state = {seconds: 60};
+                this.state = { seconds: 60 };
             }
 
-            tickTimer(){
-                if(this.props.value === true){
-                    if(this.state.seconds === 0) {
-                         this.props.handle();
-                         alert("Time completed, Your points are: "+this.props.points);
-                         location.reload();
+            tickTimer() {
+                if (this.props.value === true) {
+                    if (this.state.seconds === 0) {
+                        this.props.handle();
+                        alert("Time completed, Your points were: " + this.props.points);
+                        location.reload();
                     } else {
                         this.setState(state => ({
                             seconds: state.seconds - 1
                         }));
-                        localStorage.setItem("time", this.state.seconds);   
+                        localStorage.setItem("time", this.state.seconds);
                     }
 
                 }
             }
 
-            componentDidMount(){
-                this.interval = setInterval(()=> this.tickTimer(), 1000);
+            componentDidMount() {
+                this.interval = setInterval(() => this.tickTimer(), 1000);
             }
 
-            render(){
-                return(
+            render() {
+                return (
                     <div>
                         Seconds: {this.state.seconds}
                     </div>
