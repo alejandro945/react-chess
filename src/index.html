@@ -79,7 +79,8 @@
                     squares: Array(64).fill(null),
                     randomBox: 0,
                     hits: 0,
-                    timeout : false
+                    timeout : false,
+                    boxes : []
                 };
             }
 
@@ -91,6 +92,7 @@
 
             handleStart() {
                 this.setState({timeout: true});
+                this.state.boxes.push(this.randomBox());
             }
 
             handleFinish() {
@@ -98,7 +100,10 @@
             }
 
             randomBox(){
-                
+                var row = parseInt((Math.random() * (9 - 1) + 1), 10);
+                var col = Math.random() * (74 - 65) + 65;
+                var char = String.fromCharCode(col);   
+                return char+row;
             }
 
 
@@ -117,7 +122,11 @@
                             </div>
                             <button className="start" onClick={()=> this.handleStart()}>Start</button>
                             <Timer value={this.state.timeout} handle={()=> this.handleFinish()} />
-                            <ol></ol>
+                            <ol>
+                                {this.state.boxes.map(i =>(
+                                    <li key={i}>{i}</li>
+                                ))}
+                            </ol>
                         </div>
                     </div>
                 );
@@ -127,7 +136,7 @@
         class Timer extends React.Component {
             constructor(props){
                 super(props);
-                this.state = {seconds: 5};
+                this.state = {seconds: 60};
             }
 
             tickTimer(){
